@@ -118,30 +118,47 @@ export class React {
       )
       .join('')
   }
+
+  isHTML(type: DocType) {
+    return (type == 'html' || type === 'xhtml') && this.tag === 'html'
+  }
+  isXML(type: DocType) {
+    return type === 'xml' || type === 'xhtml'
+  }
+  isSelfClosing(type: DocType) {
+    if (type === 'html' || type === 'xhtml') {
+      return React.self_closing.includes(this.tag)
+    } else {
+      return this.children.length < 1
+    }
+  }
+
+  assignXMLNS(type: DocType) {
+    if (type !== 'xhtml') return
+    if (Object.keys(React.xmlns).includes(this.tag) && !this.props.xmlns) {
+      this.props.xmlns = React.xmlns[this.tag]
+    }
+  }
+
+  stringify_selfClosing(type: DocType): string {
+    if (this.children.length > 0) {
+      console.warn(`Self-closing <${this.tag}> but child list non-empty`)
+    }
+    return `<${this.tag}${this.props_string()}${this.isXML(type) ? '/' : ''}>`
+  }
+  stringify_nonSelfClosing(type: DocType): string {
+    return `<${this.tag}${this.props_string()}>${this.children_string(
+      ['svg', 'math'].includes(this.tag) ? 'xml' : type
+    )}</${this.tag}>`
+  }
+
   stringify(type: DocType = 'html'): string {
-    if (type === 'xhtml') {
-      if (Object.keys(React.xmlns).includes(this.tag) && !this.props.xmlns) {
-        this.props.xmlns = React.xmlns[this.tag]
-      }
-    }
-    if (
-      this.children.length > 0 &&
-      React.self_closing.includes(this.tag) &&
-      type !== 'xml'
-    ) {
-      console.warn(
-        `DOCTYPE ${type}: self closing tag <${this.tag}>, ignoring children`
-      )
-    }
+    this.assignXMLNS(type)
     return (
-      (type !== 'xml' && this.tag === 'html' ? '<!DOCTYPE html>' : '') +
-      ((type === 'xml' && this.children.length < 1) ||
-      ((type === 'html' || type === 'xhtml') &&
-        React.self_closing.includes(this.tag))
-        ? `<${this.tag}${this.props_string()}${type === 'html' ? '' : '/'}>`
-        : `<${this.tag}${this.props_string()}>${this.children_string(
-            ['svg', 'math'].includes(this.tag) ? 'xml' : type
-          )}</${this.tag}>`)
+      (this.isHTML(type) ? '<!DOCTYPE html>' : '') +
+      (this.isSelfClosing(type)
+        ? this.stringify_selfClosing(type)
+        : this.stringify_nonSelfClosing(type))
     )
   }
   toString() {
