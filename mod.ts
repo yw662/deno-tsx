@@ -85,8 +85,11 @@ export class React {
     return Object.keys(this.props)
       .filter(
         this.tag === 'script'
-          ? k => this.props[k] !== undefined && k !== 'IIFE'
-          : k => this.props[k] !== undefined
+          ? k =>
+              this.props[k] !== undefined &&
+              this.props[k] !== null &&
+              k !== 'IIFE'
+          : k => this.props[k] !== undefined && this.props[k] !== null
       )
       .map(
         k =>
@@ -110,7 +113,7 @@ export class React {
           : c instanceof Array
           ? this.children_string(type, c)
           : this.tag === 'script' && this.props['IIFE'] && c instanceof Function
-          ? minify('js', `\n(${c})()\n`)
+          ? minify('js', `\n(${c})();\n`)
           : c.toString()
       )
       .join('')
