@@ -9,16 +9,26 @@ declare global {
 }
 
 export class StyleSheet {
-  readonly sheets: { [selector: string]: Style }
+  readonly sheets: { [selector: string]: Style | Style[] }
   constructor(sheets: any) {
     this.sheets = {}
-    Object.keys(sheets).map(
-      selector => (this.sheets[selector] = new Style(sheets[selector]))
-    )
+    Object.keys(sheets).map(selector => {
+      const sheet = sheets[selector]
+      if (sheet instanceof Array) {
+        this.sheets[selector] = sheet.map(s => new Style(s))
+      } else {
+        this.sheets[selector] = new Style(sheets[selector])
+      }
+    })
   }
   toString() {
     return Object.keys(this.sheets)
-      .map(selector => `${selector}{${this.sheets[selector]}}`)
+      .map(selector => {
+        const sheet = this.sheets[selector]
+        return sheet instanceof Array
+          ? sheet.map(s => `${selector}{${s}}`).join('')
+          : `${selector}{${sheet}}`
+      })
       .join('')
   }
 }

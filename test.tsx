@@ -70,6 +70,12 @@ const testers: {
       html: `<div style="toString:() => 'I am not a style';background-color:white"></div>`
     }
   },
+  'style-string': {
+    test: () => <div style={'background-color: white'}></div>,
+    expect: {
+      html: `<div style="background-color: white"></div>`
+    }
+  },
   sheet: {
     test: () => (
       <style>
@@ -89,6 +95,27 @@ const testers: {
     expect: {
       html:
         '<style>sth{foo:bar;bar:baz}sth else{bar:foo}else{a:b}toString{}</style>'
+    }
+  },
+  'sheet-array': {
+    test: () => (
+      <style>
+        {{
+          sth: [
+            {
+              foo: 'bar',
+              bar: 'baz'
+            },
+            {
+              foo: 'bar',
+              bar: 'baz'
+            }
+          ]
+        }}
+      </style>
+    ),
+    expect: {
+      html: '<style>sth{foo:bar;bar:baz}sth{foo:bar;bar:baz}</style>'
     }
   },
   IIFE: {

@@ -80,6 +80,21 @@ This is a minimal library for tsx pre-rendering or static site generation.
     }}
   </style>
   ```
+- A style sheet entry can be an array. In that case, that entry is expanded to multiple sheets with the same selector. This can be useful with at-rules.
+  ```jsx
+  <style>
+    {{
+      'html, body': [
+        {
+          background: 'white'
+        },
+        {
+          display: 'block'
+        }
+      ]
+    }}
+  </style>
+  ```
 
 ### Special treatment for script tag and inline event handlers
 
