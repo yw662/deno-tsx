@@ -80,11 +80,11 @@ This is a minimal library for tsx pre-rendering or static site generation.
     }}
   </style>
   ```
-- A style sheet entry can be an array. In that case, that entry is expanded to multiple sheets with the same selector. This can be useful with at-rules.
+- A style sheet entry can be an array. In that case, that entry is expanded to multiple sheets with the same selector. This can be useful for at-rules.
   ```jsx
   <style>
     {{
-      'html, body': [
+      'div#main p': [
         {
           background: 'white'
         },
@@ -92,6 +92,23 @@ This is a minimal library for tsx pre-rendering or static site generation.
           display: 'block'
         }
       ]
+    }}
+  </style>
+  ```
+- Nested style sheet is allowed since `1.1.0`. The following example should work exactly the same as above.
+  ```jsx
+  <style>
+    {{
+      'div#main': {
+        p: [
+          {
+            background: 'white'
+          },
+          {
+            display: 'block'
+          }
+        ]
+      }
     }}
   </style>
   ```
