@@ -21,6 +21,15 @@ export class StyleSheet {
       }
     })
   }
+  mergeSelector(parent: string, child: string) {
+    if (child[0] === '&') {
+      return `${parent}${child.slice(1)}`
+    } else if (Style.combinators.includes(child[0])) {
+      return `${parent}${child}`
+    } else {
+      return `${parent} ${child}`
+    }
+  }
   toSingleSelectorString(selector: string, sheet: any | Array<any>): string {
     if (sheet instanceof Array)
       return sheet
@@ -35,7 +44,7 @@ export class StyleSheet {
     parts.push(
       ...rem.map(nested =>
         this.toSingleSelectorString(
-          `${selector} ${nested.selector}`,
+          this.mergeSelector(selector, nested.selector),
           nested.sheet
         )
       )
@@ -52,6 +61,7 @@ export class StyleSheet {
 }
 
 export class Style {
+  static combinators = [' ', '>', '~', '+', '|']
   styles: { [index: string]: any } | string
   constructor(styles: { [index: string]: any } | string | Style) {
     if (styles instanceof Style) {

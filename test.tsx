@@ -116,7 +116,29 @@ const testers: {
     ),
     expect: {
       html:
-        '<style>sth{foo:bar;bar:baz}sth >sth-else{baz:bar}sth >sth-else else{foo:bar}</style>'
+        '<style>sth{foo:bar;bar:baz}sth>sth-else{baz:bar}sth>sth-else else{foo:bar}</style>'
+    }
+  },
+  'sheet-nested-parent': {
+    test: () => (
+      <style>
+        {{
+          sth: {
+            foo: 'bar',
+            bar: 'baz',
+            '&.sth-else': {
+              baz: 'bar',
+              else: {
+                foo: 'bar'
+              }
+            }
+          }
+        }}
+      </style>
+    ),
+    expect: {
+      html:
+        '<style>sth{foo:bar;bar:baz}sth.sth-else{baz:bar}sth.sth-else else{foo:bar}</style>'
     }
   },
   'sheet-array': {
