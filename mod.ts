@@ -21,13 +21,31 @@ export class StyleSheet {
       }
     })
   }
+  toSingleSelectorString(selector: string, sheet: any | Array<any>): string {
+    if (sheet instanceof Array)
+      return sheet
+        .map(s => this.toSingleSheetString(selector, new Style(s)))
+        .join('')
+    else return this.toSingleSheetString(selector, new Style(sheet))
+  }
+  toSingleSheetString(selector: string, sheet: Style) {
+    const parts: string[] = []
+    const { str, rem } = sheet.toSheetString()
+    if (str) parts.push(`${selector}{${str}}`)
+    parts.push(
+      ...rem.map(nested =>
+        this.toSingleSelectorString(
+          `${selector} ${nested.selector}`,
+          nested.sheet
+        )
+      )
+    )
+    return parts.join('')
+  }
   toString() {
     return Object.keys(this.sheets)
-      .map(selector => {
-        const sheet = this.sheets[selector]
-        return sheet instanceof Array
-          ? sheet.map(s => `${selector}{${s}}`).join('')
-          : `${selector}{${sheet}}`
+      .map(s => {
+        return this.toSingleSelectorString(s, this.sheets[s])
       })
       .join('')
   }
@@ -44,11 +62,27 @@ export class Style {
   }
   toString() {
     const styles = this.styles
-    return typeof styles === 'string'
-      ? styles
-      : Object.keys(styles)
-          .map(k => `${k}:${styles[k]}`)
-          .join(';')
+    if (typeof styles === 'string') return styles
+    return Object.keys(styles)
+      .map(k => (typeof styles[k] === 'string' ? `${k}:${styles[k]}` : ''))
+      .filter(Boolean)
+      .join(';')
+  }
+  toSheetString() {
+    const styles = this.styles
+    if (typeof styles === 'string') return { str: styles, rem: [] }
+    const rem: { selector: string; sheet: any }[] = []
+    const str = Object.keys(styles)
+      .map(k => {
+        if (typeof styles[k] === 'string') {
+          return `${k}:${styles[k]}`
+        } else {
+          rem.push({ selector: k, sheet: styles[k] })
+        }
+      })
+      .filter(Boolean)
+      .join(';')
+    return { str, rem }
   }
 }
 

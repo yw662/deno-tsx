@@ -67,7 +67,7 @@ const testers: {
       ></div>
     ),
     expect: {
-      html: `<div style="toString:() => 'I am not a style';background-color:white"></div>`
+      html: `<div style="background-color:white"></div>`
     }
   },
   'style-string': {
@@ -93,8 +93,29 @@ const testers: {
       </style>
     ),
     expect: {
+      html: '<style>sth{foo:bar;bar:baz}sth else{bar:foo}else{a:b}</style>'
+    }
+  },
+  'sheet-nested': {
+    test: () => (
+      <style>
+        {{
+          sth: {
+            foo: 'bar',
+            bar: 'baz',
+            '>sth-else': {
+              baz: 'bar',
+              else: {
+                foo: 'bar'
+              }
+            }
+          }
+        }}
+      </style>
+    ),
+    expect: {
       html:
-        '<style>sth{foo:bar;bar:baz}sth else{bar:foo}else{a:b}toString{}</style>'
+        '<style>sth{foo:bar;bar:baz}sth >sth-else{baz:bar}sth >sth-else else{foo:bar}</style>'
     }
   },
   'sheet-array': {
@@ -116,6 +137,30 @@ const testers: {
     ),
     expect: {
       html: '<style>sth{foo:bar;bar:baz}sth{foo:bar;bar:baz}</style>'
+    }
+  },
+  'sheet-nested-array': {
+    test: () => (
+      <style>
+        {{
+          parent: {
+            child: [
+              {
+                foo: 'bar',
+                bar: 'baz'
+              },
+              {
+                foo: 'bar',
+                bar: 'baz'
+              }
+            ]
+          }
+        }}
+      </style>
+    ),
+    expect: {
+      html:
+        '<style>parent child{foo:bar;bar:baz}parent child{foo:bar;bar:baz}</style>'
     }
   },
   IIFE: {
