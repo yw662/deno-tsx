@@ -64,7 +64,7 @@ export class Style {
     const styles = this.styles
     if (typeof styles === 'string') return styles
     return Object.keys(styles)
-      .map(k => (typeof styles[k] === 'string' ? `${k}:${styles[k]}` : ''))
+      .map(k => (styles[k] instanceof Object ? '' : `${k}:${styles[k]}`))
       .filter(Boolean)
       .join(';')
   }
@@ -74,10 +74,10 @@ export class Style {
     const rem: { selector: string; sheet: any }[] = []
     const str = Object.keys(styles)
       .map(k => {
-        if (typeof styles[k] === 'string') {
-          return `${k}:${styles[k]}`
-        } else {
+        if (styles[k] instanceof Object) {
           rem.push({ selector: k, sheet: styles[k] })
+        } else {
+          return `${k}:${styles[k]}`
         }
       })
       .filter(Boolean)

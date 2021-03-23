@@ -62,12 +62,13 @@ const testers: {
       <div
         style={{
           toString: () => 'I am not a style',
-          'background-color': 'white'
+          'background-color': 'white',
+          opacity: 0
         }}
       ></div>
     ),
     expect: {
-      html: `<div style="background-color:white"></div>`
+      html: `<div style="background-color:white;opacity:0"></div>`
     }
   },
   'style-string': {
