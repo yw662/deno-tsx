@@ -154,12 +154,3 @@ You can write your own build script or use (for example, even) a Makefile to aut
 # Why this project, and what it plans to be
 
 There are already some SSG and pre-rendering libraries, but most of them are not "fully" static. This library will stringify the whole document so that **there will be no client-side jsx presence by default**, and therefore **there will be no server-side rendering**.
-
-Another good thing about this project, is that it won't get in your way. Unlike frameworks like preact and next.js, this project only helps you deal with tsx and will do nothing else:
-
-- It won't assume how you resolve dependencies.
-- It won't assume how you bundle things.
-- It won't assume how `dist/` (or `public/`) should looks like.
-- And, it won't assume there should be a webpack.
-
-It gives the control, from `webpack` or `create-whatever-app`, back to you.
