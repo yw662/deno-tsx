@@ -33,4 +33,11 @@ jobs:
           deno-version: ${{ matrix.deno }} # tests across multiple Deno versions
 
       - name: Run Tests
-        run: ./test.sh
+        run: deno test --coverage=cov --unstable
+      - name: Coverage
+        run: deno --unstable coverage ./cov --lcov > cov.lcov
+      - name: Collection
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./cov.lcov
