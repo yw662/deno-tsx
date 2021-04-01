@@ -45,6 +45,19 @@
 
 ## Overall examples
 
+```tsx
+// this is pages/index.tsx
+import { React } from '<path to tsx-static/mod.ts>'
+export const index = (
+  <html>
+    <head>
+      <title>Index</title>
+    </head>
+    <body></body>
+  </html>
+)
+```
+
 ```ts
 import { build, loaders } from '<builder.ts>'
 const some_other_list = something_else()
