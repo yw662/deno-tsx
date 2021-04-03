@@ -1,9 +1,11 @@
-import { React } from '../../mod.ts'
+import { React, window } from '../../mod.ts'
 export default (
   <html>
     <head>
       <title>Index</title>
     </head>
-    <body></body>
+    <body>
+      <script IIFE>{() => window.document.write('IIFE executed')}</script>
+    </body>
   </html>
 )

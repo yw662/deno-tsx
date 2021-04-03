@@ -3,18 +3,26 @@
 
 # TSX-static
 
-This is a minimal library for tsx pre-rendering or static site generation.
+`tsx-static` is a minimal library for tsx pre-rendering or static site generation.
 
 ## Usage
 
-- [`react.ts`](./doc/react.md): This file provides tsx rendering functionality. `React`, `StyleSheet`, `Style`, `DocType`, and `JSX` global namespace declaration are from `react.ts`.
+`mod.ts` of `tsx-static` re-export functions, classes and declarations from these files:
 
-  - More detailed description [here](./doc/react.md).
+- [`react.ts`](./doc/react.md): Providing class `React`, `StyleSheet`, `Style`, type `DocType`, as well as `JSX` global namespace declaration (so that TypeScript can process tsx).
 
-- [`builder.ts`](./doc/builder.md): This provides several helpers functions to build a static site (as well as the scripts it uses) using deno-tsx (and other tools, like `Deno.emit`). `emit`,`loaders`, and `build` are from `builder.ts`.
+  `react.ts` provides core functionality for tsx rendering, through `React.stringify`, and `React.toString`.
 
-  - More detailed description [here](./doc/builder.md).
+  - [More detail](./doc/react.md).
 
-- [`types.dom.d.ts`](./doc/dom.d.md): This `d.ts` contains additional type declarations as in `DOM API`, but not provided by deno. This is useful for frontend JavaScript to pass type check.
+- [`builder.ts`](./doc/builder.md): Providing function `build` and `emit`, and const `loaders`.
 
-  - More detailed description [here](./doc/dom.d.md).
+  `builder.ts` provides helper functions to build static sites and scripts, using `tsx-static` and `Deno.emit`.
+
+  - [More detail](./doc/builder.md).
+
+- [`dom.ts`](./doc/dom.md): Providing declaration for `const window` from DOM API.
+
+  This module is for type checking and auto-completing frontend code using Deno. The exported const `window` provides the same type declarations as in `lib.dom.d.ts`.
+
+  - [More detail](./doc/dom.md).
