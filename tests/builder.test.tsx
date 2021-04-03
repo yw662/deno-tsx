@@ -16,18 +16,20 @@ Deno.test('loaders.text', async () => {
 })
 
 Deno.test('loaders.tsx', async () => {
+  Deno.chdir('./tests')
   assertEquals(
     '<!DOCTYPE html><html><head><title>Index</title></head><body></body></html>',
-    await loaders.tsx('html', './tests/builder/index.tsx')
+    await loaders.tsx('html', './builder/index.tsx')
   )
   assertEquals(
     '<html><head><title>Index</title></head><body/></html>',
-    await loaders.tsx('xml', './tests/builder/index.tsx')
+    await loaders.tsx('xml', './builder/index.tsx')
   )
   assertEquals(
     '<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>Index</title></head><body></body></html>',
-    await loaders.tsx('xhtml', './tests/builder/index.tsx')
+    await loaders.tsx('xhtml', './builder/index.tsx')
   )
+  Deno.chdir('../')
 })
 
 Deno.test('loaders.ts.asset', async () => {

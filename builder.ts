@@ -23,7 +23,7 @@ export function emit(sources: { [index: string]: string }, entry: string) {
 
 export const loaders = {
   tsx: (type: DocType, src: string) =>
-    import(src).then((module: { default: React }) =>
+    import(path.join(Deno.cwd(), src)).then((module: { default: React }) =>
       module.default.stringify(type)
     ),
   text: (src: string) => Deno.readTextFile(src),
