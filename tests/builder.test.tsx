@@ -17,15 +17,15 @@ Deno.test('loaders.text', async () => {
 
 Deno.test('loaders.tsx', async () => {
   assertEquals(
-    `<!DOCTYPE html><html><head><title>Index</title></head><body><script>(() => window.document.write('IIFE executed'))();</script></body></html>`,
+    "<!DOCTYPE html><html><head><title>Index</title></head><body><script>(() => window.document.write('IIFE executed'))();(() => document.write('IIFE executed'))();</script></body></html>",
     await loaders.tsx('html', './tests/builder/index.tsx')
   )
   assertEquals(
-    `<html><head><title>Index</title></head><body><script>(() => window.document.write('IIFE executed'))();</script></body></html>`,
+    "<html><head><title>Index</title></head><body><script>(() => window.document.write('IIFE executed'))();(() => document.write('IIFE executed'))();</script></body></html>",
     await loaders.tsx('xml', './tests/builder/index.tsx')
   )
   assertEquals(
-    `<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>Index</title></head><body><script>(() => window.document.write('IIFE executed'))();</script></body></html>`,
+    "<!DOCTYPE html><html xmlns=\"http://www.w3.org/1999/xhtml\"><head><title>Index</title></head><body><script>(() => window.document.write('IIFE executed'))();(() => document.write('IIFE executed'))();</script></body></html>",
     await loaders.tsx('xhtml', './tests/builder/index.tsx')
   )
 })
@@ -74,9 +74,9 @@ Deno.test('build', async () => {
   )
   assertEquals(
     {
-      'index.html': 'rK/HSgwFvQG7Xwl0MTjhWx89uRk=',
+      'index.html': 'wGIELclieG2kfOoRoA6Epc0sTUI=',
       'index.js': '7ZmEoGoFXtIgozv9ZQ7ODGRrW2E=',
-      'sth-else': 'EUpcC9kqAmwC0Orb/5atzsH96C8='
+      'sth-else': '+u56Xz58e81hIkJb9TTZ17ylnZA='
     },
     hashes
   )
