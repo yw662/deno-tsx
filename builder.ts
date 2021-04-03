@@ -2,7 +2,7 @@ type Async<T> = T | PromiseLike<T>
 
 import * as path from 'https://deno.land/std/path/mod.ts'
 import { createHash } from 'https://deno.land/std/hash/mod.ts'
-import { React, DocType } from 'https://deno.land/x/tsx_static/mod.ts'
+import { React, DocType } from './react.ts'
 import { minify } from 'https://deno.land/x/minifier/mod.ts'
 
 export function emit(sources: { [index: string]: string }, entry: string) {
@@ -34,6 +34,7 @@ export const loaders = {
       deps: { [index: string]: { path: string; then?: never } | Async<string> }
     ) => {
       const entry = Deno.readTextFile(src)
+      // TODO: recursively automatically resolve dependency
       const dep = Promise.all(
         Object.keys(deps).map(async target => {
           const src = deps[target]

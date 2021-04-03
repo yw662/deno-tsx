@@ -1,6 +1,6 @@
 # Class React
 
-`mod.ts` provides a way to generate html or xml string from tsx. This is done by `class React`, and its `stringify` method.
+`react.ts` provides a way to generate html or xml string from tsx. This is done by `class React`, and its `stringify` method.
 
 `React.toString` is a shortcut to `React.stringify('html')`, to provide a default `toString` method.
 
@@ -22,7 +22,7 @@ Deno.mkdirSync('dist/', { recursive: true })
 Deno.writeTextFileSync('dist/index.html', index.stringify('html'))
 ```
 
-You can write your own build script, use the [`builder.ts`](./builder.md), or use (for example, even) a Makefile to automate the building task.
+You can write your own build script, use [`builder.ts`](./builder.md), or use (for example, even) a Makefile to automate the building task.
 
 ## Document Types
 
@@ -148,6 +148,6 @@ You can write your own build script, use the [`builder.ts`](./builder.md), or us
   </div>
   ```
 
-- **There will be no bundler applied to `<script>` tags, and dependencies will not be resolved, since we make no pre-assumption for dependency resolution or bundling.**
-  - If you want to bundle and import large pieces of script with complex dependencies, consider `script[src]` or `script[type="module"]` instead.
+- **There will be no bundler applied to `<script>` tags, since deno treat code inside `<script>` tag as normal code, and dependencies will not be resolved.**
+  - If you want to bundle and import large pieces of script with complex dependencies, consider `script[src]` or `script[type="module"]` instead. You might use `loaders.ts` from `builder` to compile TS code into frontend JavaScript.
   - If bundling is not what you want, `script[IIFE]` might just serve your need.

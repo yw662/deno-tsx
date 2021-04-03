@@ -1,7 +1,5 @@
 # builder
 
-**This module, `builder.ts`, is currently largely uncovered by CI testing. Instead, this is from a part of the build script I use in my own projects. Adding more testing for it is under consideration.**
-
 `builder.ts` provides several helper functions to use with `deno-tsx`.
 
 ## function build
@@ -59,7 +57,7 @@ export const index = (
 ```
 
 ```ts
-import { build, loaders } from '<builder.ts>'
+import { build, loaders } from '<deno_tsx/mod.ts>'
 const some_other_list = something_else()
 const hashes = await build('/dist', {
     'index.html': loaders.tsx('html', './pages/index.tsx'),

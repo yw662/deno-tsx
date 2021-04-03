@@ -33,7 +33,7 @@ jobs:
           deno-version: ${{ matrix.deno }} # tests across multiple Deno versions
 
       - name: Run Tests
-        run: deno test --coverage=cov --unstable
+        run: deno test -A --coverage=cov --unstable
       - name: Coverage
         run: deno --unstable coverage ./cov --lcov > cov.lcov
       - name: Collection

@@ -10,7 +10,7 @@ import { React } from '<path to tsx-static/mod.ts>'
 
 declare const document: Document
 
-export const index = (
+export default (
   <html>
     <head>
       <title>Index</title>

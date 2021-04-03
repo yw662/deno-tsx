@@ -1,5 +1,5 @@
 import { assertEquals } from 'https://deno.land/std/testing/asserts.ts'
-import { React, DocType, Style } from './mod.ts'
+import { React, DocType, Style } from '../mod.ts'
 
 const testers: {
   [entry: string]: {

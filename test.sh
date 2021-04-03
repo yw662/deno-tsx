@@ -1,2 +1,2 @@
 #! /bin/bash
-deno test --coverage=cov --unstable; deno coverage --unstable cov; rm -rf cov
+deno test -A --coverage=cov --unstable; deno coverage --unstable cov; rm -rf cov
