@@ -68,7 +68,7 @@ Deno.test('build', async () => {
       { name: 'index.js', isFile: true, isDirectory: false, isSymlink: false },
       { name: 'sth-else', isFile: true, isDirectory: false, isSymlink: false }
     ],
-    Array.from(Deno.readDirSync('./tests/builder/dist'))
+    Array.from(Deno.readDirSync('./tests/builder/dist')).sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
   )
   assertEquals(
     {
