@@ -23,9 +23,9 @@ export function emit(sources: { [index: string]: string }, entry: string) {
 
 export const loaders = {
   tsx: (type: DocType, src: string) =>
-    import(path.join(Deno.cwd(), src)).then((module: { default: React }) =>
-      module.default.stringify(type)
-    ),
+    import(
+      'file://' + path.join(Deno.cwd(), src)
+    ).then((module: { default: React }) => module.default.stringify(type)),
   text: (src: string) => Deno.readTextFile(src),
   binary: (src: string) => Deno.readFile(src),
   ts: {
