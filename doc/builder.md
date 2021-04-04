@@ -51,9 +51,18 @@ export const index = (
     <head>
       <title>Index</title>
     </head>
-    <body></body>
+    <body>
+      <script type="module" src=".esm/foo.js"></script>
+    </body>
   </html>
 )
+```
+
+```ts
+// ./foo.js
+import { window } from 'https://deno.land/x/tsx_static/dom.ts'
+import * as asset from './include/asset.ts'
+window.document.write(asset)
 ```
 
 ```ts
@@ -66,7 +75,9 @@ const hashes = await build('/dist', {
     'esm/foo.js': loaders.ts.emit(
         './foo.ts',
         {
-            '/include/types.dom.d.ts': loaders.text('./include/types.dom.d.ts'),
+            'https://deno.land/x/tsx_static/dom.ts': {
+              path: 'https://deno.land/x/tsx_static/dom.ts'
+            },
             '/include/asset.ts': loaders.ts.asset('some-asset-string'),
             '/template.tsx': loaders.ts.asset(loaders.tsx('html', './template.tsx'))
         }

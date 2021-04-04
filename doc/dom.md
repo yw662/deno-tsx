@@ -38,7 +38,7 @@ which will produce:
 It also works like this:
 
 ```tsx
-import { React, window } from '<path to tsx-static/mod.ts>'
+import { React, window, Window } from '<path to tsx-static/mod.ts>'
 ```
 
 This is also useful for frontend TypeScript with `Deno.emit`. More detailed description on this can be found [here](./builder.md).
