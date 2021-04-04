@@ -5,6 +5,15 @@ import { createHash } from 'https://deno.land/std/hash/mod.ts'
 import { React, DocType } from './react.ts'
 import { minify } from 'https://deno.land/x/minifier/mod.ts'
 
+function isURL(target: string) {
+  try {
+    new URL(target)
+    return true
+  } catch (e) {
+    return false
+  }
+}
+
 export function emit(sources: { [index: string]: string }, entry: string) {
   return Deno.emit(entry, {
     bundle: 'esm',
@@ -22,14 +31,18 @@ export function emit(sources: { [index: string]: string }, entry: string) {
 }
 
 export const loaders = {
-  tsx: (type: DocType, src: string) => {
-    console.log(Deno.cwd(), src)
-    return import(
-      'file://' + path.join(Deno.cwd(), src)
-    ).then((module: { default: React }) => module.default.stringify(type))
-  },
-  text: (src: string) => Deno.readTextFile(src),
-  binary: (src: string) => Deno.readFile(src),
+  tsx: (type: DocType, src: string) =>
+    import(
+      isURL(src) ? src : `file://${path.join(Deno.cwd(), src)}`
+    ).then((module: { default: React }) => module.default.stringify(type)),
+  text: (src: string) =>
+    isURL(src) ? fetch(src).then(resp => resp.text()) : Deno.readTextFile(src),
+  binary: (src: string) =>
+    isURL(src)
+      ? fetch(src)
+          .then(resp => resp.arrayBuffer())
+          .then(buffer => new Uint8Array(buffer))
+      : Deno.readFile(src),
   ts: {
     emit: async (
       src: string,

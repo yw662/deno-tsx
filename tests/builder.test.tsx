@@ -6,6 +6,13 @@ Deno.test('loaders.binary', async () => {
     await Deno.readFile('./tests/builder/index.tsx'),
     await loaders.binary('./tests/builder/index.tsx')
   )
+  assertEquals(
+    await Deno.readFile('./tests/builder/index.tsx'),
+    // But Deno don't allow file:// in fetch
+    await loaders.binary(
+      'https://deno.land/x/tsx_static/tests/builder/index.tsx'
+    )
+  )
 })
 
 Deno.test('loaders.text', async () => {
@@ -13,12 +20,25 @@ Deno.test('loaders.text', async () => {
     await Deno.readTextFile('./tests/builder/index.tsx'),
     await loaders.text('./tests/builder/index.tsx')
   )
+  assertEquals(
+    await Deno.readTextFile('./tests/builder/index.tsx'),
+    // But Deno don't allow file:// in fetch
+    await loaders.text('https://deno.land/x/tsx_static/tests/builder/index.tsx')
+  )
 })
 
 Deno.test('loaders.tsx', async () => {
   assertEquals(
     "<!DOCTYPE html><html><head><title>Index</title></head><body><script>(() => window.document.write('IIFE executed'))();(() => document.write('IIFE executed'))();</script></body></html>",
     await loaders.tsx('html', './tests/builder/index.tsx')
+  )
+  // But Deno don't allow file:// in fetch
+  assertEquals(
+    "<!DOCTYPE html><html><head><title>Index</title></head><body><script>(() => window.document.write('IIFE executed'))();(() => document.write('IIFE executed'))();</script></body></html>",
+    await loaders.tsx(
+      'html',
+      'https://deno.land/x/tsx_static/tests/builder/index.tsx'
+    )
   )
   assertEquals(
     "<html><head><title>Index</title></head><body><script>(() => window.document.write('IIFE executed'))();(() => document.write('IIFE executed'))();</script></body></html>",
