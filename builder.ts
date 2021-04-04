@@ -48,14 +48,14 @@ export const loaders = {
       src: string,
       deps: { [index: string]: { path: string; then?: never } | Async<string> }
     ) => {
-      const entry = Deno.readTextFile(src)
+      const entry = loaders.text(src)
       // TODO: recursively automatically resolve dependency
       const dep = Promise.all(
         Object.keys(deps).map(async target => {
           const src = deps[target]
           const content = await (typeof src === 'string' || src.then
             ? src
-            : Deno.readTextFile(src.path))
+            : loaders.text(src.path))
           return { [target]: content }
         })
       ).then(deps => Object.assign({}, ...deps))
