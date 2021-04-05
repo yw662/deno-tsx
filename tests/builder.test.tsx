@@ -71,7 +71,7 @@ Deno.test('loaders.ts.emit', async () => {
     })
   )
   assertEquals(
-    '"use strict"; const a = `b`; const b = \'c\'; console.log(a, b);',
+    "const a = `b`; const window = self; const c = 'd'; const aa1 = `b`; export { aa1 as aa }; window.console.log(a, c);",
     await loaders.ts.emit(
       'https://deno.land/x/tsx_static/tests/builder/index.ts',
       {
