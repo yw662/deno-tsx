@@ -5,6 +5,40 @@ import { createHash } from 'https://deno.land/std/hash/mod.ts'
 import { React, DocType } from './react.ts'
 import { minify } from 'https://deno.land/x/minifier/mod.ts'
 
+function parseString(literal: string) {
+  literal = literal.trim()
+  const quote = literal[0]
+  const right = literal.lastIndexOf(quote)
+  return literal.slice(1, right)
+}
+
+function parseDependency(line: string) {
+  const isImport = line.startsWith('import ')
+  const isExport = line.startsWith('export ')
+  if (!isImport && !isExport) return undefined
+  const from = line.indexOf('from ')
+  if (from !== -1) return parseString(line.slice(from + 5))
+  if (isExport) return undefined
+  return parseString(line.slice(7))
+}
+
+function lookupDependency(file: string, cwd: string) {
+  // TODO: It may not be necessary to check every lines
+  return file
+    .split('\n')
+    .map(parseDependency)
+    .filter((v): v is string => v !== undefined)
+    .map(dep => {
+      if (isURL(dep)) return dep
+      if (isURL(cwd)) {
+        const ret = new URL(cwd)
+        ret.pathname = path.join(ret.pathname, dep)
+        return ret.toString()
+      }
+      return path.join(cwd, dep)
+    })
+}
+
 function isURL(target: string) {
   try {
     new URL(target)
@@ -46,26 +80,35 @@ export const loaders = {
   ts: {
     emit: async (
       src: string,
-      deps: { [index: string]: { path: string; then?: never } | Async<string> }
+      dependencies: { [index: string]: Async<string> }
     ) => {
-      const entry = loaders.text(src)
-      // TODO: recursively automatically resolve dependency
-      const dep = Promise.all(
-        Object.keys(deps).map(async target => {
-          const src = deps[target]
-          const content = await (typeof src === 'string' || src.then
-            ? src
-            : loaders.text(src.path))
-          return { [target]: content }
-        })
-      ).then(deps => Object.assign({}, ...deps))
-      return emit(
-        {
-          [path.join('/', src)]: await entry,
-          ...(await dep)
-        },
-        path.join('/', src)
-      )
+      const cwd = isURL(src) ? '' : src[0] === '/' ? '/' : './'
+      const src_entry = isURL(src) ? src : path.join('/', src)
+      let deps = await Promise.all(
+        Object.keys(dependencies).map(async dep => ({
+          [dep]: await dependencies[dep]
+        }))
+      ).then(deps => deps.reduce((c, v) => ({ ...c, ...v })))
+      if (!deps[src_entry]) deps[src_entry] = await loaders.text(src)
+
+      // resolving additional dependencies
+      let additional = Object.keys(deps)
+        .map(dep => lookupDependency(deps[dep], path.dirname(dep)))
+        .flat()
+
+      const addToDeps = async (dep: string) => {
+        const entry = isURL(dep) ? dep : path.join('/', dep)
+        if (deps[entry]) return []
+        const content = await loaders.text(
+          isURL(dep) ? dep : path.join(cwd, dep)
+        )
+        deps[entry] = content
+        return lookupDependency(content, path.dirname(dep))
+      }
+      while (additional.length > 0) {
+        additional = (await Promise.all(additional.map(addToDeps))).flat()
+      }
+      return emit(deps, src_entry)
     },
     asset: async (asset: Async<string>) => `export default \`${await asset}\``
   }

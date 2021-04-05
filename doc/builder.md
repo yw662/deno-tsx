@@ -19,8 +19,9 @@
   - emit
     - this function is to use `Deno.emit` to produce standalone JavaScript file. It supports only ECMAScript Module because this is what `Deno.emit` supports.
     - `loaders.ts.emit` use the `double emit` technique to provide compiling and ESM bundling.
-    - **It implements bundling, but the dependencies must be passed manually. It uses the `sources` option of `Deno.emit`, which means it will not use any external file not provided through `deps` parameter.**
-      - A trivial dependency resolver for this particular usage is currently under consideration, since it is helpful and harmless. However, this resolver may not work will all npm modules.
+    - A trivial dependency resolver is applied based on relative path, which works well with importing through relative path 0r URL, but may not work with `node_modules`.
+      - This resolver does not use a full parser. **IT IS A KNOWN ISSUE** that multi-line import statements are not supported.
+        - Contributions are welcomed if there is a usable TS parser in Deno.
   - asset
 
     - This function is to turn a string into TypeScript module.
@@ -75,9 +76,6 @@ const hashes = await build('/dist', {
     'esm/foo.js': loaders.ts.emit(
         './foo.ts',
         {
-            'https://deno.land/x/tsx_static/dom.ts': {
-              path: 'https://deno.land/x/tsx_static/dom.ts'
-            },
             '/include/asset.ts': loaders.ts.asset('some-asset-string'),
             '/template.tsx': loaders.ts.asset(loaders.tsx('html', './template.tsx'))
         }

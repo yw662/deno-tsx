@@ -1,3 +1,4 @@
+import * as path from 'https://deno.land/std/path/mod.ts'
 import { assertEquals } from 'https://deno.land/std/testing/asserts.ts'
 import { build, loaders } from '../mod.ts'
 
@@ -56,12 +57,30 @@ Deno.test('loaders.ts.asset', async () => {
 
 Deno.test('loaders.ts.emit', async () => {
   assertEquals(
-    '"use strict"; const a = `b`; const b = \'c\'; console.log(a, b);',
+    "const a = `b`; const window = self; const c = 'd'; const aa1 = `b`; export { aa1 as aa }; window.console.log(a, c);",
     await loaders.ts.emit('./tests/builder/index.ts', {
       '/tests/builder/a.ts': 'export const a = `b`',
-      '/tests/builder/b.ts': { path: './tests/builder/b.ts' },
-      '/tests/builder/c.ts': { path: './tests/builder/c.ts' }
+      '/tests/builder/aa.ts': 'export const aa = `b`'
     })
+  )
+  assertEquals(
+    "const a = `b`; const window = self; const c = 'd'; const aa1 = `b`; export { aa1 as aa }; window.console.log(a, c);",
+    await loaders.ts.emit(path.resolve('./tests/builder/index.ts'), {
+      [path.resolve('./tests/builder/a.ts')]: 'export const a = `b`',
+      [path.resolve('./tests/builder/aa.ts')]: 'export const aa = `b`'
+    })
+  )
+  assertEquals(
+    '"use strict"; const a = `b`; const b = \'c\'; console.log(a, b);',
+    await loaders.ts.emit(
+      'https://deno.land/x/tsx_static/tests/builder/index.ts',
+      {
+        'https://deno.land/x/tsx_static/tests/builder/a.ts':
+          'export const a = `b`',
+        'https://deno.land/x/tsx_static/tests/builder/aa.ts':
+          'export const aa = `b`'
+      }
+    )
   )
 })
 
@@ -70,8 +89,7 @@ Deno.test('build', async () => {
     'index.html': loaders.tsx('xhtml', './tests/builder/index.tsx'),
     'index.js': loaders.ts.emit('./tests/builder/index.ts', {
       '/tests/builder/a.ts': 'export const a = `b`',
-      '/tests/builder/b.ts': { path: './tests/builder/b.ts' },
-      '/tests/builder/c.ts': { path: './tests/builder/c.ts' }
+      '/tests/builder/aa.ts': 'export const aa = `b`'
     }),
     'sth-else': loaders.binary('./tests/builder/index.tsx')
   })
@@ -95,7 +113,7 @@ Deno.test('build', async () => {
   assertEquals(
     {
       'index.html': 'wGIELclieG2kfOoRoA6Epc0sTUI=',
-      'index.js': '7ZmEoGoFXtIgozv9ZQ7ODGRrW2E=',
+      'index.js': 'U9v8k1KVSwNRGJUGUvTtgm/a0b8=',
       'sth-else': '+u56Xz58e81hIkJb9TTZ17ylnZA='
     },
     hashes

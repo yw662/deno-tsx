@@ -1,3 +1,6 @@
 import { a } from './a.ts'
+export { aa } from './aa.ts'
+import { window } from '../../dom.ts'
 import { b } from './b.ts'
-console.log(a, b)
+import './b.ts'
+window.console.log(a, b)
