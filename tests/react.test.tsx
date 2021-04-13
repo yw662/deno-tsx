@@ -42,7 +42,7 @@ const testers: {
   attributes: {
     test: () => (
       <div
-        str="a"
+        str='a'
         num={1 + 1}
         tr={true}
         fs={false}

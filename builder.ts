@@ -80,15 +80,17 @@ export const loaders = {
   ts: {
     emit: async (
       src: string,
-      dependencies: { [index: string]: Async<string> }
+      dependencies?: { [index: string]: Async<string> }
     ) => {
       const cwd = isURL(src) ? '' : src[0] === '/' ? '/' : './'
       const src_entry = isURL(src) ? src : path.join('/', src)
-      let deps = await Promise.all(
-        Object.keys(dependencies).map(async dep => ({
-          [dep]: await dependencies[dep]
-        }))
-      ).then(deps => deps.reduce((c, v) => ({ ...c, ...v })))
+      let deps = dependencies
+        ? await Promise.all(
+            Object.keys(dependencies).map(async dep => ({
+              [dep]: await dependencies[dep]
+            }))
+          ).then(deps => deps.reduce((c, v) => ({ ...c, ...v }), {}))
+        : {}
       if (!deps[src_entry]) deps[src_entry] = await loaders.text(src)
 
       // resolving additional dependencies

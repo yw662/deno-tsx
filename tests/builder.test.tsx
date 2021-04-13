@@ -57,6 +57,14 @@ Deno.test('loaders.ts.asset', async () => {
 
 Deno.test('loaders.ts.emit', async () => {
   assertEquals(
+    "const c1 = 'd'; export { c1 as c };",
+    await loaders.ts.emit('./tests/builder/c.ts')
+  )
+  assertEquals(
+    "const c1 = 'd'; export { c1 as c };",
+    await loaders.ts.emit('./tests/builder/c.ts', {})
+  )
+  assertEquals(
     "const a = `b`; const window = self; const c = 'd'; const aa1 = `b`; export { aa1 as aa }; window.console.log(a, c);",
     await loaders.ts.emit('./tests/builder/index.ts', {
       '/tests/builder/a.ts': 'export const a = `b`',
