@@ -57,6 +57,9 @@ export function emit(sources: { [index: string]: string }, entry: string) {
       Deno.emit('/src.js', {
         sources: {
           '/src.js': result.files['deno:///bundle.js']
+        },
+        compilerOptions: {
+          target: 'es2020'
         }
       })
     )
