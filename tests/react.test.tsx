@@ -186,6 +186,26 @@ const testers: {
         '<style>parent child{foo:bar;bar:baz}parent child{foo:bar;bar:baz}</style>'
     }
   },
+  'sheet-nested-multiple': {
+    test: () => (
+      <style>
+        {{
+          parent: {
+            'child1, child2, &.p, >child3': {
+              foo: 'bar',
+              child4: {
+                bar: 'baz'
+              }
+            }
+          }
+        }}
+      </style>
+    ),
+    expect: {
+      html:
+        '<style>parent child1,parent child2,parent.p,parent>child3{foo:bar}parent child1 child4,parent child2 child4,parent.p child4,parent>child3 child4{bar:baz}</style>'
+    }
+  },
   IIFE: {
     test: () => (
       <div onclick={() => console.log(1)}>

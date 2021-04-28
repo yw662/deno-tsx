@@ -22,13 +22,21 @@ export class StyleSheet {
     })
   }
   mergeSelector(parent: string, child: string) {
-    if (child[0] === '&') {
-      return `${parent}${child.slice(1)}`
-    } else if (Style.combinators.includes(child[0])) {
-      return `${parent}${child}`
-    } else {
-      return `${parent} ${child}`
-    }
+    const parents = parent.split(',')
+    return child
+      .split(',')
+      .map(child => child.trim())
+      .map(child => {
+        if (child[0] === '&') {
+          return parents.map(parent => `${parent}${child.slice(1)}`)
+        } else if (Style.combinators.includes(child[0])) {
+          return parents.map(parent => `${parent}${child}`)
+        } else {
+          return parents.map(parent => `${parent} ${child}`)
+        }
+      })
+      .flat()
+      .join(',')
   }
   toSingleSelectorString(selector: string, sheet: any | Array<any>): string {
     if (sheet instanceof Array)
