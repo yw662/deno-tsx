@@ -34,13 +34,13 @@ Deno.test('loaders.tsx', async () => {
     await loaders.tsx('html', './tests/builder/index.tsx')
   )
   // But Deno don't allow file:// in fetch
-  assertEquals(
-    "<!DOCTYPE html><html><head><title>Index</title></head><body><script>(() => window.document.write('IIFE executed'))();(() => document.write('IIFE executed'))();</script></body></html>",
-    await loaders.tsx(
-      'html',
-      'https://deno.land/x/tsx_static/tests/builder/index.tsx'
-    )
-  )
+  // assertEquals(
+  //   "<!DOCTYPE html><html><head><title>Index</title></head><body><script>(() => window.document.write('IIFE executed'))();(() => document.write('IIFE executed'))();</script></body></html>",
+  //   await loaders.tsx(
+  //     'html',
+  //     'https://deno.land/x/tsx_static/tests/builder/index.tsx'
+  //   )
+  // )
   assertEquals(
     "<html><head><title>Index</title></head><body><script>(() => window.document.write('IIFE executed'))();(() => document.write('IIFE executed'))();</script></body></html>",
     await loaders.tsx('xml', './tests/builder/index.tsx')

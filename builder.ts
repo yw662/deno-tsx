@@ -50,7 +50,7 @@ function isURL(target: string) {
 
 export function emit(sources: { [index: string]: string }, entry: string) {
   return Deno.emit(entry, {
-    bundle: 'esm',
+    bundle: 'module',
     sources
   })
     .then(result =>
@@ -69,9 +69,9 @@ export function emit(sources: { [index: string]: string }, entry: string) {
 
 export const loaders = {
   tsx: (type: DocType, src: string) =>
-    import(
-      isURL(src) ? src : `file://${path.join(Deno.cwd(), src)}`
-    ).then((module: { default: React }) => module.default.stringify(type)),
+    import(isURL(src) ? src : `file://${path.join(Deno.cwd(), src)}`).then(
+      (module: { default: React }) => module.default.stringify(type)
+    ),
   text: (src: string) =>
     isURL(src) ? fetch(src).then(resp => resp.text()) : Deno.readTextFile(src),
   binary: (src: string) =>
